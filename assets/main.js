@@ -71,7 +71,7 @@ gifSearch = query => {
 		//loop through results to create DOM elements with them
 		for (let gif of results) {
 			// let resultDiv = $("<div>").attr("data-number", i);
-			let image = $("<img>").attr("src", gif.images.fixed_height.url);
+			let image = $("<img>").attr("src", gif.images.fixed_width.url).addClass("gif");
 
 			let urlText = $("<input>")
 				.attr("type", "text")
@@ -100,12 +100,15 @@ gifSearch = query => {
 
 //handles adding term to newTerms and storing array
 const addTerm = term => {
-	if (newTerms.unshift(term) > 5) {
-		newTerms.pop();
-	}
-	localStorage.setItem("newTerms", JSON.stringify(newTerms));
-	$("#new-searches").empty();
-	buttonDisplay();
+    if (term !== ""){
+        if (newTerms.unshift(term) > 5) {
+            newTerms.pop();
+        }
+        localStorage.setItem("newTerms", JSON.stringify(newTerms));
+        $("#new-searches").empty();
+        buttonDisplay();
+    }
+	
 };
 
 // loops through buttons in newTerms to display them
