@@ -5,26 +5,34 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 		<title>GIPHY Search</title>
+		<link rel="stylesheet" href="./assets/css/style.css" />
+		<link
+			href="https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&display=swap"
+			rel="stylesheet"
+		/>
 	</head>
 	<body>
 		<div class="container">
-			<header class="title-header">
-				<h1 id="title">GIPHY SEARCH</h1>
-			</header>
-            <div id="default-terms"></div>
-            <div id="new-searches"></div>
-			<input type="text" id="search-input" />
-			<input id="add-gif" type="submit" value="GO" />
+			<h1 id="title">GIPHY SEARCH</h1>
+			<div id="default-terms"></div>
+			<div id="new-searches"></div>
+			<div id="query-box">
+				<input type="text" id="search-input" />
+				<input id="add-gif" type="submit" value="Add Search" />
+			</div>
+			<div id="gif-display"></div>
+			<div class="search-nav">
+				<button id="previous">PREV</button>
+				<span id="result-count"></span>
+				<button id="next">NEXT</button>
+			</div>
+		</div>
 
-            <div id="gif-display"></div>
-            <div class="search-nav">
-                <button id = "previous"><- PREV</button>
-                <span id="result-count">1 of 10</span>
-                <button id = "next">NEXT -></button>
-            </div>
-        </div>
-        
-        <footer class="sticky-footer">Created by <a href="https://github.com/cfbender">cfbender</a></footer>
+		<footer class="sticky-footer">
+			<div id="footer">
+				Created by <a href="https://github.com/cfbender">cfbender</a>
+			</div>
+		</footer>
 
 		<script
 			src="https://code.jquery.com/jquery-3.4.1.min.js"

@@ -30,9 +30,10 @@ const buttonLimit = 5;
 let newTerms = JSON.parse(localStorage.getItem("newTerms")) || [];
 
 //constructor function to add result to object
-function Result(image, text, button) {
+function Result(image, text, rating, button) {
 	this.image = image;
 	this.text = text;
+	this.rating = rating;
 	this.button = button;
 }
 
@@ -41,7 +42,7 @@ let globalResults = {};
 
 //handles ajax and response storage
 gifSearch = query => {
-	let search = query;
+    let search = query;
 
 	if (search === "trending") {
 		var queryURL =
@@ -60,7 +61,8 @@ gifSearch = query => {
 		url: queryURL,
 		method: "GET"
 	}).then(response => {
-		let results = response.data;
+        let results = response.data;
+        console.log(results);
 		//empty out previous results
 		$("#gif-display").empty();
 		//keep track of which result we are displaying
@@ -74,20 +76,25 @@ gifSearch = query => {
 			let urlText = $("<input>")
 				.attr("type", "text")
 				.attr("value", gif.bitly_gif_url)
-				.addClass("url-text");
+                .addClass("url-text");
+            let ratingText = gif.rating;
+            ratingText = ratingText.toUpperCase();
+            let rating = $("<p>").text("Rating: " + ratingText)
 			let copyButton = $("<button>")
 				.html("<img src ='./assets/images/document.png' id = 'clip-image'>")
 				.addClass("clipboard-copy");
 
             //store our DOM elements in a global result object
-			globalResults[i] = new Result(image, urlText, copyButton);
+			globalResults[i] = new Result(image, urlText, rating, copyButton);
 
 			//increment our counter
 			i++;
 		}
 
 		//display first item
-		resultChanger(1);
+        resultChanger(1);
+        $(".search-nav").show();
+        $("#gif-display").show();
 	});
 };
 
@@ -125,10 +132,12 @@ const resultChanger = newID => {
 	let resultDiv = $("<div>")
 		.attr("data-number", newID)
 		.attr("id", "displayed-gif");
-	let image = globalResults[newID].image;
-	resultDiv.append(image);
-	resultDiv.append(globalResults[newID].text);
-	resultDiv.append(globalResults[newID].button);
+	let image = $("<div>").html(globalResults[newID].image).addClass("gif-container");
+    resultDiv.append(image);
+    let imageLinkContainer = $("<div>").append(globalResults[newID].text).append(globalResults[newID].button).addClass("image-link")
+    resultDiv.append(imageLinkContainer);
+    let ratingContainer = $("<div>").attr("id", "rating-container").html(globalResults[newID].rating)
+    resultDiv.append(ratingContainer);
 	$("#gif-display").empty();
 	$("#gif-display").append(resultDiv);
 	$("#result-count").text(newID + " of " + searchLimit);
