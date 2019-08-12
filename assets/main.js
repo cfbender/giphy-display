@@ -1,3 +1,8 @@
+/*
+    GIPHY API Search
+    cfbender
+*/
+
 const topics = [
 	"trending",
 	"dab",
@@ -31,10 +36,11 @@ function Result(image, text, button) {
 	this.button = button;
 }
 
-//initializing our results object
+//initializing our global results object. will hold objects from constructor function
 let globalResults = {};
 
-gifSearchDisplay = query => {
+//handles ajax and response storage
+gifSearch = query => {
 	let search = query;
 
 	if (search === "trending") {
@@ -73,6 +79,7 @@ gifSearchDisplay = query => {
 				.html("<img src ='./assets/images/document.png' id = 'clip-image'>")
 				.addClass("clipboard-copy");
 
+            //store our DOM elements in a global result object
 			globalResults[i] = new Result(image, urlText, copyButton);
 
 			//increment our counter
@@ -84,6 +91,7 @@ gifSearchDisplay = query => {
 	});
 };
 
+//handles adding term to newTerms and storing array
 const addTerm = term => {
 	if (newTerms.unshift(term) > 5) {
 		newTerms.pop();
@@ -93,22 +101,27 @@ const addTerm = term => {
 	buttonDisplay();
 };
 
+// loops through buttons in newTerms to display them
 const buttonDisplay = () => {
 	for (let item of newTerms) {
 		let button = $("<button>")
 			.addClass("search")
 			.attr("data-search", item)
 			.text(item);
-		$("#new-searches").prepend(button);
+		$("#new-searches").append(button);
 	}
-	$("#new-searches").append(
+	if (newTerms.length > 0) {
+        $("#new-searches").append(
 		$("<button>")
 			.attr("id", "clear-terms")
 			.text("CLEAR")
-	);
+        );
+    }
 };
 
+//displays the gif of parameter ID
 const resultChanger = newID => {
+    //create a new div to hold our gif and info
 	let resultDiv = $("<div>")
 		.attr("data-number", newID)
 		.attr("id", "displayed-gif");
@@ -121,41 +134,51 @@ const resultChanger = newID => {
 	$("#result-count").text(newID + " of " + searchLimit);
 };
 
+//adds new button and search term
 $("#add-gif").click(function() {
 	let query = $("#search-input").val();
 	$("#search-input").val("");
 	addTerm(query);
-	gifSearchDisplay(query);
+	gifSearch(query);
 });
 
+// goes back in results
 $("#previous").click(function() {
-	let id = $("#displayed-gif").attr("data-number");
+    let id = $("#displayed-gif").attr("data-number");
+    //only go back if there is one to go back to
 	if (id > 1) {
 		id--;
 		resultChanger(id);
 	}
 });
 
+//goes to next result
 $("#next").click(function() {
-	let id = $("#displayed-gif").attr("data-number");
+    let id = $("#displayed-gif").attr("data-number");
+    //only go forward if there is one to go forward to
 	if (id < 10) {
 		id++;
 		resultChanger(id);
 	}
 });
 
+//runs search from button click
 $(document).on("click", ".search", function() {
 	let query = $(this).attr("data-search");
-	gifSearchDisplay(query);
+	gifSearch(query);
 });
 
+//clears out previously added terms
 $(document).on("click", "#clear-terms", function() {
 	$("#new-searches").empty();
 	newTerms = [];
 	localStorage.setItem("newTerms", JSON.stringify(newTerms));
 });
 
+//boolean to prevent multiple animations
 let copied = false;
+
+//copies link to clipboard
 $(document).on("click", ".clipboard-copy", function() {
 	$(".url-text").select();
 	if (document.execCommand("copy")) {
